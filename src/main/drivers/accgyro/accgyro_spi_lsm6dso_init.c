@@ -48,7 +48,7 @@
 // LSM6DSO register configuration values
 typedef enum {
     LSM6DSO_VAL_INT1_CTRL = 0x02,             // enable gyro data ready interrupt pin 1
-    LSM6DSO_VAL_INT2_CTRL = 0x02,             // enable gyro data ready interrupt pin 2
+    LSM6DSO_VAL_INT2_CTRL = 0x00,             // disable gyro data ready interrupt pin 2
     LSM6DSO_VAL_CTRL1_XL_ODR833 = 0x07,       // accelerometer 833hz output data rate (gyro/8)
     LSM6DSO_VAL_CTRL1_XL_ODR1667 = 0x08,      // accelerometer 1666hz output data rate (gyro/4)
     LSM6DSO_VAL_CTRL1_XL_ODR3332 = 0x09,      // accelerometer 3332hz output data rate (gyro/2)
@@ -64,6 +64,7 @@ typedef enum {
     LSM6DSO_VAL_CTRL3_C_PP_OD = 0,            // (bit 4) interrupt pins push/pull
     LSM6DSO_VAL_CTRL3_C_SIM = 0,              // (bit 3) SPI 4-wire interface mode
     LSM6DSO_VAL_CTRL3_C_IF_INC = BIT(2),      // (bit 2) auto-increment address for burst reads
+    LSM6DSO_VAL_CTRL4_C_DRDY_MASK = BIT(3),   // (bit 3) data ready interrupt mask
     LSM6DSO_VAL_CTRL4_C_I2C_DISABLE = BIT(2), // (bit 2) disable I2C interface
     LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G = BIT(1),  // (bit 1) enable gyro LPF1
     LSM6DSO_VAL_CTRL6_C_XL_HM_MODE = 0,       // (bit 4) enable accelerometer high performance mode
@@ -162,7 +163,7 @@ static void lsm6dsoConfig(gyroDev_t *gyro)
 
     // Configure control register 4
     // enable accelerometer high performane mode; enable gyro LPF1
-    lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL4_C, LSM6DSO_MASK_CTRL4_C, (LSM6DSO_VAL_CTRL4_C_I2C_DISABLE | LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G), 1);
+    lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL4_C, LSM6DSO_MASK_CTRL4_C, (LSM6DSO_VAL_CTRL4_C_DRDY_MASK | LSM6DSO_VAL_CTRL4_C_I2C_DISABLE | LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G), 1);
 
     // Configure control register 6
     // disable I2C interface; set gyro LPF1 cutoff according to gyro_hardware_lpf setting

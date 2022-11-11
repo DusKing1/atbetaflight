@@ -147,11 +147,11 @@ bool lsm6dsoGyroRead(gyroDev_t *gyro)
         if (gyro->detectedEXTI > GYRO_EXTI_DETECT_THRESHOLD) {
             if (spiUseDMA(&gyro->dev)) {
                 gyro->dev.callbackArg = (uint32_t)gyro;
-                gyro->dev.txBuf[1] = LSM6DSO_REG_OUTX_L_G | 0x80;
+                gyro->dev.txBuf[0] = LSM6DSO_REG_OUTX_L_G | 0x80;
                 gyro->segments[0].len = 14;
                 gyro->segments[0].callback = lsm6dsoIntcallback;
-                gyro->segments[0].u.buffers.txData = &gyro->dev.txBuf[1];
-                gyro->segments[0].u.buffers.rxData = &gyro->dev.rxBuf[1];
+                gyro->segments[0].u.buffers.txData = gyro->dev.txBuf;
+                gyro->segments[0].u.buffers.rxData = gyro->dev.rxBuf;
                 gyro->segments[0].negateCS = true;
                 gyro->gyroModeSPI = GYRO_EXTI_INT_DMA;
             } else {
@@ -169,22 +169,25 @@ bool lsm6dsoGyroRead(gyroDev_t *gyro)
     case GYRO_EXTI_INT:
     case GYRO_EXTI_NO_INT:
     {
-        gyro->dev.txBuf[1] = LSM6DSO_REG_OUTX_L_G | 0x80;
+        gyro->dev.txBuf[0] = LSM6DSO_REG_OUTX_L_G | 0x80;
 
         busSegment_t segments[] = {
-                {.u.buffers = {NULL, NULL}, 7, true, NULL},
+                {.u.buffers = {NULL, NULL}, 8, true, NULL},
                 {.u.link = {NULL, NULL}, 0, true, NULL},
         };
-        segments[0].u.buffers.txData = &gyro->dev.txBuf[1];
-        segments[0].u.buffers.rxData = &gyro->dev.rxBuf[1];
+        segments[0].u.buffers.txData = &gyro->dev.txBuf;
+        segments[0].u.buffers.rxData = &gyro->dev.rxBuf;
 
         spiSequence(&gyro->dev, &segments[0]);
 
         // Wait for completion
         spiWait(&gyro->dev);
 
-        // Fall through
-        FALLTHROUGH;
+        gyro->gyroADCRaw[X] = gyroData[1];
+        gyro->gyroADCRaw[Y] = gyroData[2];
+        gyro->gyroADCRaw[Z] = gyroData[3];
+
+        break;
     }
 
     case GYRO_EXTI_INT_DMA:
