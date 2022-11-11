@@ -161,11 +161,11 @@ static void lsm6dsoConfig(gyroDev_t *gyro)
     lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL3_C, LSM6DSO_MASK_CTRL3_C, (LSM6DSO_VAL_CTRL3_C_BDU | LSM6DSO_VAL_CTRL3_C_H_LACTIVE | LSM6DSO_VAL_CTRL3_C_PP_OD | LSM6DSO_VAL_CTRL3_C_SIM | LSM6DSO_VAL_CTRL3_C_IF_INC), 1);
 
     // Configure control register 4
-    // enable accelerometer high performane mode; set gyro LPF1 cutoff to 335.5hz
+    // enable accelerometer high performane mode; enable gyro LPF1
     lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL4_C, LSM6DSO_MASK_CTRL4_C, (LSM6DSO_VAL_CTRL4_C_I2C_DISABLE | LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G), 1);
 
     // Configure control register 6
-    // disable I2C interface; enable gyro LPF1
+    // disable I2C interface; set gyro LPF1 cutoff according to gyro_hardware_lpf setting
     lsm6dsoWriteRegisterBits(dev, LSM6DSO_REG_CTRL6_C, LSM6DSO_MASK_CTRL6_C, (LSM6DSO_VAL_CTRL6_C_XL_HM_MODE | getLsmDlpfBandwidth()), 1);
 
     // Configure control register 7
