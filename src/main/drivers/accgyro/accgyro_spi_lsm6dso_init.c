@@ -84,7 +84,7 @@ typedef enum {
 typedef enum {
     LSM6DSO_MASK_CTRL3_C = 0x7C,         // 0b01111100
     LSM6DSO_MASK_CTRL3_C_RESET = BIT(0), // 0b00000001
-    LSM6DSO_MASK_CTRL4_C = 0x06,         // 0b00000110
+    LSM6DSO_MASK_CTRL4_C = 0x0E,         // 0b00001110
     LSM6DSO_MASK_CTRL6_C = 0x17,         // 0b00010111
     LSM6DSO_MASK_CTRL7_G = 0x70,         // 0b01110000
     LSM6DSO_MASK_CTRL9_XL = 0x02,        // 0b00000010
